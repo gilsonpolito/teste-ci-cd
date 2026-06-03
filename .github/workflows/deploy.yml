@@ -2,7 +2,7 @@ name: Pipeline CI/CD - GitHub Pages
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 # Permissões necessárias para o GitHub Pages escrever no repositório
 permissions:
