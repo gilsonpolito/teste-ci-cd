@@ -1,0 +1,43 @@
+name: Pipeline CI/CD - GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ]
+
+# Permissões necessárias para o GitHub Pages escrever no repositório
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  # 1. ETAPA DE CI (Integração Contínua)
+  validacao-html:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Baixar Código
+      uses: actions/checkout@v4
+
+    - name: Validar Estrutura do HTML (Linter)
+      uses: htmlhint/htmlhint-action@v2
+      with:
+        addresses: 'index.html'
+
+  # 2. ETAPA DE CD (Entrega Contínua)
+  deploy-producao:
+    needs: validacao-html # Só roda se o HTML estiver correto!
+    runs-on: ubuntu-latest
+    steps:
+    - name: Baixar Código
+      uses: actions/checkout@v4
+
+    - name: Configurar o Pages
+      uses: actions/configure-pages@v4
+
+    - name: Compactar Artefatos do Site
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '.' # Sobe a pasta raiz onde está o index.html
+
+    - name: Publicar no GitHub Pages
+      uses: actions/deploy-pages@v4
