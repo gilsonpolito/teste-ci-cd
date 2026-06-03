@@ -17,15 +17,20 @@ jobs:
     - name: Baixar Código
       uses: actions/checkout@v4
 
-    # Validador atualizado e super rápido para a aula
-    - name: Validar Estrutura do HTML
-      uses: anishathalye/proof-action@v1
+    - name: Configurar Node.js (Ambiente do Linter)
+      uses: actions/setup-node@v4
       with:
-        directory: '.'
+        node-version: 18
+
+    - name: Instalar Validador de HTML (HTMLHint)
+      run: npm install -g htmlhint
+
+    - name: Validar Arquivos HTML
+      run: htmlhint "index.html"
 
   # 2. ETAPA DE CD (Entrega Contínua)
   deploy-producao:
-    needs: validacao-html
+    needs: validacao-html # Só roda se o HTMLHint der "OK"
     runs-on: ubuntu-latest
     steps:
     - name: Baixar Código
